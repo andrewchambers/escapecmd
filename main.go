@@ -13,6 +13,7 @@ import (
 
 func main() {
 	jsonFormat := flag.Bool("json", false, "use json formatting")
+	escapeAgain := flag.Bool("e", false, "escape the expansion again")
 	printNewLine := flag.Bool("n", false, "print a new line at the end of the expansion")
 	flag.Parse()
 
@@ -62,7 +63,13 @@ func main() {
 		eol = "\n"
 	}
 
-	_, err := fmt.Printf("%s%s", strconv.Quote(buf.String()), eol)
+	result := buf.String()
+
+	if *escapeAgain {
+		result = strconv.Quote(result)
+	}
+
+	_, err := fmt.Printf("%s%s", result, eol)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(1)
